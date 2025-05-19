@@ -6,8 +6,10 @@ import json
 
 print("네이버 맛집 검색")
 
-client_id = "4adGOKprONP_kdGxk87w"
-client_secret = "6qnNRxAkZ0"
+# 커밋전에 삭제
+client_id = " "
+client_secret = " "
+
 encText = urllib.parse.quote("경성대 맛집")
 url = "https://openapi.naver.com/v1/search/blog?query=" + encText # JSON 결과
 # url = "https://openapi.naver.com/v1/search/blog.xml?query=" + encText # XML 결과

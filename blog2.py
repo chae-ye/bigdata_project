@@ -63,8 +63,9 @@ if __name__ == '__main__':
 
     # !!! 실제 테스트 시에는 아래 ID와 Secret을 본인의 유효한 값으로 교체해야 합니다. !!!
     # 제공해주신 ID와 Secret을 테스트용으로 사용합니다.
-    test_client_id = "4adGOKprONP_kdGxk87w"
-    test_client_secret = "6qnNRxAkZ0"
+    #커밋전에 삭제
+    test_client_id = " "
+    test_client_secret = " "
 
     if test_client_id == "YOUR_ACTUAL_CLIENT_ID" or test_client_secret == "YOUR_ACTUAL_CLIENT_SECRET":
         print("테스트를 위해서는 실제 Naver API Client ID와 Secret을 입력해야 합니다.")
