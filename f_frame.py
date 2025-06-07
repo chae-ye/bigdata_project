@@ -1,243 +1,127 @@
+import requests
 import random
 import csv
-import os
 
-# --- 임시 데이터 생성 (검색어 순위) ---
-# 실제로는 이 데이터를 API나 데이터베이스에서 가져와야 합니다.
-baemin_keywords = [f"배민인기검색어_{i:02d}" for i in range(1, 31)] # 30개 예시 검색어
-# 예: ["떡볶이", "치킨", "마라탕", "피자", "족발", ... ] 등으로 실제 데이터 대체 가능
-yogiyo_keywords = [f"요기요추천검색어_{i:02d}" for i in range(1, 26)] # 25개 예시 검색어
+# 네이버 API 인증 정보 입력
+CLIENT_ID = 'YOUR_CLIENT_ID'        # ← 본인의 네이버 Client ID
+CLIENT_SECRET = 'YOUR_CLIENT_SECRET'  # ← 본인의 Client Secret
 
-# --- 프로그램 시작 ---
-while True: # 메인 메뉴 루프
-    print("\n========= 배달앱 선택 =========")
-    print("1. 배달의 민족")
-    print("2. 요기요")
-    print("3. 종료")
-    print("==============================")
-    main_choice = input("원하는 번호를 입력해주세요: ")
+# 위치 입력
+print("\n📍 검색할 지역을 입력하세요 (예: 강남역, 홍대입구 등): ")
+location = input("▶ 위치 입력: ")
 
-    if main_choice == '1': # 배달의 민족 선택
-        while True: # 배달의 민족 서브 메뉴 루프
-            print("\n--- 배달의 민족 ---")
-            print("A: 검색 순위 5")
-            print("B: 검색 순위 10")
-            print("C: 검색 순위 20")
-            print("D: 20개의 메뉴 중에 랜덤으로 1개의 메뉴 추천") # 설명 문구 수정
-            print("E: 20개의 메뉴를 CSV 파일로 저장")
-            print("R: 메인화면으로 돌아가기")
-            print("X: 프로그램 종료")
-            sub_choice_baemin = input("선택: ").upper()
+while True:
+    print("\n# 지정한 위치 주변의 맛집, 술집, 카페 추천")
+    print("1. 맛집")
+    print("2. 술집")
+    print("3. 카페")
+    print("4. 종료")
+    choice = input("번호 입력: ")
 
-            if sub_choice_baemin == 'A':
-                # --- 검색어순위 5 표시 (배달의 민족) ---
-                app_name_bm = "배달의 민족"
-                keywords_bm = baemin_keywords
-                count_bm = 5
-                print(f"\n--- {app_name_bm} 검색어 순위 Top {count_bm} ---")
-                if not keywords_bm:
-                    print("표시할 검색어 순위 정보가 없습니다.")
-                else:
-                    actual_count_bm = min(count_bm, len(keywords_bm))
-                    if actual_count_bm == 0:
-                        print("표시할 검색어 순위 정보가 없습니다.")
-                    else:
-                        for i in range(actual_count_bm):
-                            print(f"{i+1}. {keywords_bm[i]}")
-                print("------------------------------")
-            
-            elif sub_choice_baemin == 'B':
-                # --- 검색어순위 10 표시 (배달의 민족) ---
-                app_name_bm = "배달의 민족"
-                keywords_bm = baemin_keywords
-                count_bm = 10
-                print(f"\n--- {app_name_bm} 검색어 순위 Top {count_bm} ---")
-                if not keywords_bm:
-                    print("표시할 검색어 순위 정보가 없습니다.")
-                else:
-                    actual_count_bm = min(count_bm, len(keywords_bm))
-                    if actual_count_bm == 0:
-                        print("표시할 검색어 순위 정보가 없습니다.")
-                    else:
-                        for i in range(actual_count_bm):
-                            print(f"{i+1}. {keywords_bm[i]}")
-                print("------------------------------")
+    if choice == "4":
+        break
 
-            elif sub_choice_baemin == 'C':
-                # --- 검색어순위 20 표시 (배달의 민족) ---
-                app_name_bm = "배달의 민족"
-                keywords_bm = baemin_keywords
-                count_bm = 20
-                print(f"\n--- {app_name_bm} 검색어 순위 Top {count_bm} ---")
-                if not keywords_bm:
-                    print("표시할 검색어 순위 정보가 없습니다.")
-                else:
-                    actual_count_bm = min(count_bm, len(keywords_bm))
-                    if actual_count_bm == 0:
-                        print("표시할 검색어 순위 정보가 없습니다.")
-                    else:
-                        for i in range(actual_count_bm):
-                            print(f"{i+1}. {keywords_bm[i]}")
-                print("------------------------------")
-
-            elif sub_choice_baemin == 'D':
-                # --- 랜덤 추천 (배달의 민족 검색어) ---
-                app_name_bm = "배달의 민족"
-                keywords_bm = baemin_keywords
-                limit_bm = 20
-                # 메뉴 설명에 따라 "20개의 검색어 순위 중"으로 해석하여 로직 유지
-                print(f"\n--- {app_name_bm} 랜덤 추천 (상위 {limit_bm}개 검색어 대상) ---")
-                if not keywords_bm:
-                    print("추천할 검색어 정보가 없습니다.")
-                else:
-                    target_keywords_bm = keywords_bm[:min(limit_bm, len(keywords_bm))]
-                    if not target_keywords_bm:
-                        print("추천할 검색어 정보가 없습니다.")
-                    else:
-                        recommended_bm = random.choice(target_keywords_bm)
-                        print(f"오늘의 추천 검색어: {recommended_bm}")
-                print("------------------------------")
-
-            elif sub_choice_baemin == 'E':
-                # --- CSV 파일로 저장 (배달의 민족 검색어 순위) ---
-                app_name_bm = "배달의 민족"
-                keywords_bm = baemin_keywords
-                filename_prefix_bm = "baemin_keywords" # 파일명 변경
-                if not keywords_bm:
-                    print(f"\n{app_name_bm}: 저장할 검색어 순위 정보가 없습니다.")
-                else:
-                    filename_bm = f"{filename_prefix_bm}_rankings_{random.randint(1000,9999)}.csv"
-                    try:
-                        with open(filename_bm, 'w', newline='', encoding='utf-8-sig') as csvfile_bm:
-                            writer_bm = csv.writer(csvfile_bm)
-                            writer_bm.writerow(['순위', '검색어']) # CSV 헤더 변경
-                            for i, keyword_bm in enumerate(keywords_bm):
-                                writer_bm.writerow([i+1, keyword_bm])
-                        print(f"\n{app_name_bm}: 검색어 순위가 '{os.path.abspath(filename_bm)}' 파일로 저장되었습니다.")
-                    except IOError:
-                        print(f"\n{app_name_bm}: 파일 저장 중 오류가 발생했습니다.")
-                print("------------------------------")
-
-            elif sub_choice_baemin == 'R':
-                print("처음 메뉴로 돌아갑니다.")
-                break 
-            elif sub_choice_baemin == 'X':
-                print("프로그램을 종료합니다.")
-                exit() 
-            else:
-                print("잘못된 입력입니다. 다시 선택해주세요.")
-    
-    elif main_choice == '2': # 요기요 선택
-        while True: # 요기요 서브 메뉴 루프
-            print("\n------ 요기요 ------")
-            print("a: 검색어순위 5")
-            print("b: 검색어순위 10")
-            print("c: 검색어순위 20")
-            print("d: 20개의 검색어 순위중 랜덤으로 1개 추천") # 설명 문구 수정
-            print("e: CSV 파일로 저장")
-            print("r: 처음으로 돌아가기")
-            print("x: 프로그램 종료")
-            sub_choice_yogiyo = input("선택: ").lower()
-
-            if sub_choice_yogiyo == 'a':
-                # --- 검색어순위 5 표시 (요기요) ---
-                app_name_yg = "요기요"
-                keywords_yg = yogiyo_keywords
-                count_yg = 5
-                print(f"\n--- {app_name_yg} 검색어 순위 Top {count_yg} ---")
-                if not keywords_yg:
-                    print("표시할 검색어 순위 정보가 없습니다.")
-                else:
-                    actual_count_yg = min(count_yg, len(keywords_yg))
-                    if actual_count_yg == 0:
-                        print("표시할 검색어 순위 정보가 없습니다.")
-                    else:
-                        for i in range(actual_count_yg):
-                            print(f"{i+1}. {keywords_yg[i]}")
-                print("------------------------------")
-            
-            elif sub_choice_yogiyo == 'b':
-                # --- 검색어순위 10 표시 (요기요) ---
-                app_name_yg = "요기요"
-                keywords_yg = yogiyo_keywords
-                count_yg = 10
-                print(f"\n--- {app_name_yg} 검색어 순위 Top {count_yg} ---")
-                if not keywords_yg:
-                    print("표시할 검색어 순위 정보가 없습니다.")
-                else:
-                    actual_count_yg = min(count_yg, len(keywords_yg))
-                    if actual_count_yg == 0:
-                        print("표시할 검색어 순위 정보가 없습니다.")
-                    else:
-                        for i in range(actual_count_yg):
-                            print(f"{i+1}. {keywords_yg[i]}")
-                print("------------------------------")
-
-            elif sub_choice_yogiyo == 'c':
-                # --- 검색어순위 20 표시 (요기요) ---
-                app_name_yg = "요기요"
-                keywords_yg = yogiyo_keywords
-                count_yg = 20
-                print(f"\n--- {app_name_yg} 검색어 순위 Top {count_yg} ---")
-                if not keywords_yg:
-                    print("표시할 검색어 순위 정보가 없습니다.")
-                else:
-                    actual_count_yg = min(count_yg, len(keywords_yg))
-                    if actual_count_yg == 0:
-                        print("표시할 검색어 순위 정보가 없습니다.")
-                    else:
-                        for i in range(actual_count_yg):
-                            print(f"{i+1}. {keywords_yg[i]}")
-                print("------------------------------")
-
-            elif sub_choice_yogiyo == 'd':
-                # --- 랜덤 추천 (요기요 검색어) ---
-                app_name_yg = "요기요"
-                keywords_yg = yogiyo_keywords
-                limit_yg = 20
-                print(f"\n--- {app_name_yg} 랜덤 추천 (상위 {limit_yg}개 검색어 대상) ---")
-                if not keywords_yg:
-                    print("추천할 검색어 정보가 없습니다.")
-                else:
-                    target_keywords_yg = keywords_yg[:min(limit_yg, len(keywords_yg))]
-                    if not target_keywords_yg:
-                        print("추천할 검색어 정보가 없습니다.")
-                    else:
-                        recommended_yg = random.choice(target_keywords_yg)
-                        print(f"오늘의 추천 검색어: {recommended_yg}")
-                print("------------------------------")
-            
-            elif sub_choice_baemin == 'E':
-                # --- CSV 파일로 저장 (배달의 민족 검색어 순위) ---
-                app_name_bm = "배달의 민족"
-                keywords_bm = baemin_keywords
-                filename_prefix_bm = "baemin_keywords" # 파일명 변경
-                if not keywords_bm:
-                    print(f"\n{app_name_bm}: 저장할 검색어 순위 정보가 없습니다.")
-                else:
-                    filename_bm = f"{filename_prefix_bm}_rankings_{random.randint(1000,9999)}.csv"
-                    try:
-                        with open(filename_bm, 'w', newline='', encoding='utf-8-sig') as csvfile_bm:
-                            writer_bm = csv.writer(csvfile_bm)
-                            writer_bm.writerow(['순위', '검색어']) # CSV 헤더 변경
-                            for i, keyword_bm in enumerate(keywords_bm):
-                                writer_bm.writerow([i+1, keyword_bm])
-                        print(f"\n{app_name_bm}: 검색어 순위가 '{os.path.abspath(filename_bm)}' 파일로 저장되었습니다.")
-                    except IOError:
-                        print(f"\n{app_name_bm}: 파일 저장 중 오류가 발생했습니다.")
-                print("------------------------------")
-
-            elif sub_choice_yogiyo == 'r':
-                print("처음 메뉴로 돌아갑니다.")
-                break 
-            elif sub_choice_yogiyo == 'x':
-                print("프로그램을 종료합니다.")
-                exit() 
-            else:
-                print("잘못된 입력입니다. 다시 선택해주세요.")
-
-    elif main_choice == '3': # 종료 선택
-        print("프로그램을 종료합니다. 이용해주셔서 감사합니다.")
-        break 
+    if choice == "1":
+        keyword = "맛집"
+        submenu_keys = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅎ"]
+    elif choice == "2":
+        keyword = "술집"
+        submenu_keys = ["A", "B", "C", "D", "E", "F", "Q"]
+    elif choice == "3":
+        keyword = "카페"
+        submenu_keys = ["a", "b", "c", "d", "e", "f", "q"]
     else:
-        print("잘못된 입력입니다. 1, 2, 3 중에서 선택해주세요.")
+        print("❌ 잘못된 입력입니다.")
+        continue
+
+    # 네이버 API 호출
+    url = "https://openapi.naver.com/v1/search/local.json"
+    headers = {
+        "X-Naver-Client-Id": CLIENT_ID,
+        "X-Naver-Client-Secret": CLIENT_SECRET
+    }
+    params = {
+        "query": f"{location} {keyword}",
+        "display": 30,
+        "start": 1,
+        "sort": "random"
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        results = data.get("items", [])
+    else:
+        print("❌ 요청 실패:", response.status_code)
+        continue
+
+    if not results:
+        print("⚠ 검색 결과가 없습니다.")
+        continue
+
+    # 서브 메뉴 시작
+    while True:
+        print(f"\n📂 [{keyword} 서브 메뉴]")
+        if keyword == "맛집":
+            print("ㄱ. 순위 5")
+            print("ㄴ. 순위 10")
+            print("ㄷ. 순위 30")
+            print("ㄹ. 랜덤 추천")
+            print("ㅁ. CSV 저장")
+            print("ㅂ. 첫 화면으로")
+            print("ㅎ. 종료")
+        elif keyword == "술집":
+            print("A. 순위 5")
+            print("B. 순위 10")
+            print("C. 순위 30")
+            print("D. 랜덤 추천")
+            print("E. CSV 저장")
+            print("F. 첫 화면으로")
+            print("Q. 종료")
+        elif keyword == "카페":
+            print("a. 순위 5")
+            print("b. 순위 10")
+            print("c. 순위 30")
+            print("d. 랜덤 추천")
+            print("e. CSV 저장")
+            print("f. 첫 화면으로")
+            print("q. 종료")
+
+        sub = input("선택: ")
+
+        # 출력 함수
+        def print_list(limit):
+            for i in range(min(limit, len(results))):
+                item = results[i]
+                title = item["title"].replace("<b>", "").replace("</b>", "")
+                print(f"{i+1}. {title} - {item['roadAddress']}")
+                print(f"   ▶ {item['link']}")
+
+        # 서브메뉴 처리
+        if sub in ["ㄱ", "A", "a"]:
+            print_list(5)
+        elif sub in ["ㄴ", "B", "b"]:
+            print_list(10)
+        elif sub in ["ㄷ", "C", "c"]:
+            print_list(30)
+        elif sub in ["ㄹ", "D", "d"]:
+            item = random.choice(results)
+            title = item["title"].replace("<b>", "").replace("</b>", "")
+            print(f"\n🔀 랜덤 추천: {title}")
+            print(f"   주소: {item['roadAddress']}")
+            print(f"   ▶ {item['link']}")
+        elif sub in ["ㅁ", "E", "e"]:
+            filename = f"{keyword}_{location}.csv"
+            with open(filename, "w", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow(["순위", "이름", "카테고리", "주소", "링크"])
+                for i, item in enumerate(results, 1):
+                    title = item["title"].replace("<b>", "").replace("</b>", "")
+                    writer.writerow([i, title, item["category"], item["roadAddress"], item["link"]])
+            print(f"✅ '{filename}' 저장 완료")
+        elif sub in ["ㅂ", "F", "f"]:
+            break
+        elif sub in ["ㅎ", "Q", "q"]:
+            exit()
+        else:
+            print("❌ 잘못된 입력입니다.")
