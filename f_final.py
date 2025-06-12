@@ -122,7 +122,7 @@ while True:
             print(f"\n📂 [{keyword}] 서브 메뉴")
             print("1. 검색 결과 5개 보기")
             print("2. 검색 결과 10개 보기")
-            print("3. 검색 결과 30개 보기")
+            print(f"3. 검색 결과 전부 보기 ({len(results)}개)")
             print("4. 랜덤 추천")
             print("5. CSV 파일로 저장")
             print("6. 카테고리 선택으로")
@@ -135,7 +135,7 @@ while True:
             elif sub == "2":
                 print_list(results, 10)
             elif sub == "3":
-                print_list(results, 30)
+                 print_list(results, len(results))
             elif sub == "4":
                 item = random.choice(results)
                 title = item.get("title", "").replace("<b>", "").replace("</b>", "")
